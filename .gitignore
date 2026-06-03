@@ -30,3 +30,6 @@ api_hunter_plugins/
 
 # Logs
 *.log
+
+# 项目进度记录（仅本地保留）
+灵探项目进度执行记录.md
