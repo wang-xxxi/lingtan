@@ -1,0 +1,32 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+*.egg
+
+# PyInstaller
+build/
+dist/
+*.spec
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+Thumbs.db
+.DS_Store
+
+# Project generated data (runtime)
+data/api_hunter.db
+data/reports/
+data/uploads/
+exports/
+api_hunter_data/
+api_hunter_exports/
+api_hunter_plugins/
+
+# Logs
+*.log

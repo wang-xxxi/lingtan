@@ -1,0 +1,20 @@
+{
+    "name": "Example Fingerprint",
+    "type": "tech_signature",
+    "description": "Example plugin showing how to add custom technology detection rules",
+    "rules": [
+        {
+            "name": "ExampleCMS",
+            "category": "CMS",
+            "headers": {"X-Powered-By": "ExampleCMS"},
+            "html": ["examplecms-logo", "data-examplecms"],
+            "cookies": ["ecms_session"]
+        },
+        {
+            "name": "ExampleJS",
+            "category": "Frontend",
+            "html": ["example.min.js", "data-ej-"],
+            "scripts": ["examplejs"]
+        }
+    ]
+}

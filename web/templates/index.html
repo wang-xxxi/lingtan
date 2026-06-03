@@ -1,0 +1,1838 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>灵探 - 接口发现与分析系统</title>
+    <link rel="stylesheet" href="/static/css/app.css">
+</head>
+<body>
+    <div id="app">
+        <!-- Sidebar -->
+        <nav class="sidebar">
+            <div class="logo">
+                <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="10"/><path d="M8 12l2 2 4-4"/>
+                </svg>
+                <span>灵探</span>
+            </div>
+            <ul class="nav-menu">
+                <!-- Dashboard -->
+                <li class="nav-item active" data-tab="dashboard" data-tooltip="查看扫描统计和最近发现的接口">
+                    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+                    <span>总览</span>
+                </li>
+
+                <!-- 资产发现 -->
+                <li class="nav-group-header" data-group="discover">
+                    <span class="nav-group-arrow">▾</span>
+                    <span>资产发现</span>
+                </li>
+                <div class="nav-group" data-group="discover">
+                    <li class="nav-item" data-tab="scan" data-tooltip="输入网址，自动发现其中的 API 接口">
+                        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+                        <span>网站扫描</span>
+                    </li>
+                    <li class="nav-item" data-tab="analyze" data-tooltip="分析单个页面的所有请求和接口">
+                        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/><path d="M16 13H8m8 4H8m2-8H8"/></svg>
+                        <span>URL分析</span>
+                    </li>
+                    <li class="nav-item" data-tab="js-analyze" data-tooltip="分析 JS 文件，提取隐藏接口和硬编码密钥">
+                        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+                        <span>JS分析</span>
+                    </li>
+                    <li class="nav-item" data-tab="upload" data-tooltip="导入 APK、HAR、Burp 等文件提取接口">
+                        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                        <span>文件分析</span>
+                    </li>
+                    <li class="nav-item" data-tab="site-crawl" data-tooltip="自动爬取整站所有页面，构建站点地图">
+                        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></svg>
+                        <span>全站爬取</span>
+                    </li>
+                    <li class="nav-item" data-tab="spec-import" data-tooltip="导入 Swagger / OpenAPI 文件解析接口定义">
+                        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/></svg>
+                        <span>规范导入</span>
+                    </li>
+                </div>
+
+                <!-- 数据 -->
+                <li class="nav-group-header" data-group="data">
+                    <span class="nav-group-arrow">▾</span>
+                    <span>数据</span>
+                </li>
+                <div class="nav-group" data-group="data">
+                    <li class="nav-item" data-tab="endpoints" data-tooltip="所有发现的 API 接口汇总列表">
+                        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+                        <span>接口列表</span>
+                    </li>
+                    <li class="nav-item" data-tab="sitemap" data-tooltip="网站页面的树形结构图">
+                        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><line x1="10" y1="6.5" x2="14" y2="6.5"/><line x1="10" y1="17.5" x2="14" y2="17.5"/></svg>
+                        <span>站点地图</span>
+                    </li>
+                    <li class="nav-item" data-tab="assets" data-tooltip="网站用到的 CSS、JS、图片等文件列表">
+                        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+                        <span>资源清单</span>
+                    </li>
+                    <li class="nav-item" data-tab="change-monitor" data-tooltip="跟踪接口的增删改变化">
+                        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                        <span>变更监控</span>
+                    </li>
+                    <li class="nav-item" data-tab="dep-graph" data-tooltip="页面和接口之间的调用关系图">
+                        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><circle cx="6" cy="6" r="3"/><circle cx="18" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="18" r="3"/><line x1="9" y1="6" x2="15" y2="6"/><line x1="6" y1="9" x2="6" y2="15"/><line x1="18" y1="9" x2="18" y2="15"/><line x1="9" y1="18" x2="15" y2="18"/><line x1="8.5" y1="7.5" x2="15.5" y2="16.5"/></svg>
+                        <span>依赖图</span>
+                    </li>
+                </div>
+
+                <!-- 安全检测 -->
+                <li class="nav-group-header" data-group="security">
+                    <span class="nav-group-arrow">▾</span>
+                    <span>安全检测</span>
+                </li>
+                <div class="nav-group" data-group="security">
+                    <li class="nav-item" data-tab="security" data-tooltip="自动检测 SQL 注入、XSS 等常见漏洞">
+                        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                        <span>漏洞扫描</span>
+                    </li>
+                    <li class="nav-item" data-tab="waf-detect" data-tooltip="检测目标网站有没有防火墙保护">
+                        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg>
+                        <span>WAF 检测</span>
+                    </li>
+                    <li class="nav-item" data-tab="auth-check" data-tooltip="检查登录、权限等认证机制是否安全">
+                        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+                        <span>认证检测</span>
+                    </li>
+                    <li class="nav-item" data-tab="header-audit" data-tooltip="检查 HTTP 响应头的安全配置是否完善">
+                        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M12 8v4l3 3"/></svg>
+                        <span>安全头审计</span>
+                    </li>
+                    <li class="nav-item" data-tab="param-mine" data-tooltip="从代码中挖掘可能存在的隐藏参数">
+                        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/><path d="M3 7l4-4 4 4M17 3l4 4-4 4"/></svg>
+                        <span>参数挖掘</span>
+                    </li>
+                </div>
+
+                <!-- 侦察收集 -->
+                <li class="nav-group-header" data-group="recon">
+                    <span class="nav-group-arrow">▾</span>
+                    <span>侦察收集</span>
+                </li>
+                <div class="nav-group" data-group="recon">
+                    <li class="nav-item" data-tab="subdomain" data-tooltip="查找目标域名的所有子域名">
+                        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></svg>
+                        <span>子域名枚举</span>
+                    </li>
+                    <li class="nav-item" data-tab="threat-intel" data-tooltip="查目标在公开情报库中的暴露情况">
+                        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+                        <span>威胁情报</span>
+                    </li>
+                    <li class="nav-item" data-tab="wayback" data-tooltip="查看网站历史上曾经有过的接口和页面">
+                        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                        <span>历史接口</span>
+                    </li>
+                    <li class="nav-item" data-tab="backup-scan" data-tooltip="探测网站是否泄露了备份文件或配置">
+                        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                        <span>备份探测</span>
+                    </li>
+                    <li class="nav-item" data-tab="cloud-scan" data-tooltip="检查网站代码中是否泄露了云存储地址">
+                        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 10h-1.26A8 8 0 109 20h9a5 5 0 000-10z"/></svg>
+                        <span>云存储检测</span>
+                    </li>
+                    <li class="nav-item" data-tab="forbidden-bypass" data-tooltip="页面被拒绝访问时，尝试各种技巧绕过">
+                        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg>
+                        <span>403 绕过</span>
+                    </li>
+                </div>
+
+                <!-- 指纹识别 -->
+                <li class="nav-group-header" data-group="fingerprint">
+                    <span class="nav-group-arrow">▾</span>
+                    <span>指纹识别</span>
+                </li>
+                <div class="nav-group" data-group="fingerprint">
+                    <li class="nav-item" data-tab="tech-fp" data-tooltip="识别网站用的框架、CMS 及其版本号">
+                        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                        <span>技术栈指纹</span>
+                    </li>
+                    <li class="nav-item" data-tab="jarm" data-tooltip="通过 TLS 加密特征识别服务器类型">
+                        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+                        <span>JARM 指纹</span>
+                    </li>
+                    <li class="nav-item" data-tab="favicon-fp" data-tooltip="通过网站小图标识别已知应用（如 Jenkins、Grafana）">
+                        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 01-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
+                        <span>Favicon 指纹</span>
+                    </li>
+                </div>
+
+                <!-- 协议分析 -->
+                <li class="nav-group-header" data-group="protocol">
+                    <span class="nav-group-arrow">▾</span>
+                    <span>协议分析</span>
+                </li>
+                <div class="nav-group" data-group="protocol">
+                    <li class="nav-item" data-tab="proxy" data-tooltip="启动代理服务器抓取经过的 HTTP 请求">
+                        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/><circle cx="7" cy="8" r="1"/><circle cx="12" cy="8" r="1"/></svg>
+                        <span>流量抓包</span>
+                    </li>
+                    <li class="nav-item" data-tab="graphql" data-tooltip="检测网站是否使用了 GraphQL 接口">
+                        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 22 8.5 22 15.5 12 22 2 15.5 2 8.5"/><circle cx="12" cy="8" r="1.5"/><circle cx="6" cy="15" r="1.5"/><circle cx="18" cy="15" r="1.5"/><line x1="12" y1="9.5" x2="7.5" y2="14"/><line x1="12" y1="9.5" x2="16.5" y2="14"/></svg>
+                        <span>GraphQL</span>
+                    </li>
+                    <li class="nav-item" data-tab="websocket" data-tooltip="检测网站的 WebSocket 连接地址">
+                        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12h4l3-9 6 18 3-9h4"/></svg>
+                        <span>WebSocket</span>
+                    </li>
+                </div>
+
+                <!-- 输出 -->
+                <li class="nav-group-header" data-group="output">
+                    <span class="nav-group-arrow">▾</span>
+                    <span>输出</span>
+                </li>
+                <div class="nav-group" data-group="output">
+                    <li class="nav-item" data-tab="export" data-tooltip="将发现的接口导出为 JSON、CSV 等格式">
+                        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                        <span>导出</span>
+                    </li>
+                    <li class="nav-item" data-tab="scripts" data-tooltip="自动生成 Python、cURL 测试脚本">
+                        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>
+                        <span>脚本生成</span>
+                    </li>
+                    <li class="nav-item" data-tab="report" data-tooltip="生成扫描结果的 HTML 报告文件">
+                        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+                        <span>报告</span>
+                    </li>
+                    <li class="nav-item" data-tab="seo" data-tooltip="分析网页的搜索引擎优化指标">
+                        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 01-.9 3.8 8.5 8.5 0 01-7.6 4.7 8.38 8.38 0 01-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 01-.9-3.8 8.5 8.5 0 014.7-7.6 8.38 8.38 0 013.8-.9h.5a8.48 8.48 0 018 8v.5z"/></svg>
+                        <span>SEO分析</span>
+                    </li>
+                </div>
+
+                <!-- 工具 -->
+                <li class="nav-group-header" data-group="tools">
+                    <span class="nav-group-arrow">▾</span>
+                    <span>工具</span>
+                </li>
+                <div class="nav-group" data-group="tools">
+                    <li class="nav-item" data-tab="requester" data-tooltip="像 Postman 一样手动构造和调试 HTTP 请求">
+                        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+                        <span>请求构造</span>
+                    </li>
+                    <li class="nav-item" data-tab="tools" data-tooltip="端口扫描、接口对比等实用小工具">
+                        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z"/></svg>
+                        <span>工具箱</span>
+                    </li>
+                    <li class="nav-item" data-tab="tasks" data-tooltip="查看和管理正在后台运行的任务">
+                        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+                        <span>任务队列</span>
+                    </li>
+                    <li class="nav-item" data-tab="plugins" data-tooltip="安装自定义扫描规则扩展功能">
+                        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><line x1="10" y1="6.5" x2="14" y2="6.5"/><line x1="6.5" y1="10" x2="6.5" y2="14"/><line x1="17.5" y1="10" x2="17.5" y2="14"/></svg>
+                        <span>插件</span>
+                    </li>
+                    <li class="nav-item" data-tab="sessions" data-tooltip="打开浏览器登录网站，自动捕获 Cookie">
+                        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+                        <span>登录会话</span>
+                    </li>
+                </div>
+            </ul>
+            <div class="sidebar-footer">
+                <button class="btn-icon" onclick="clearAllData()" title="清除所有数据">
+                    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg>
+                </button>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Dashboard Tab -->
+            <section class="tab-content active" id="tab-dashboard">
+                <div class="page-header">
+                    <h1>灵探</h1>
+                    <p>自动发现、分析和管理各类API接口</p>
+                </div>
+
+                <!-- Quick Actions -->
+                <div class="quick-actions">
+                    <div class="quick-action" onclick="switchTab('scan')">
+                        <div class="qa-icon" style="background:rgba(59,130,246,0.15);color:var(--info);">
+                            <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+                        </div>
+                        <span>网站扫描</span>
+                    </div>
+                    <div class="quick-action" onclick="switchTab('analyze')">
+                        <div class="qa-icon" style="background:rgba(16,185,129,0.15);color:var(--success);">
+                            <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/></svg>
+                        </div>
+                        <span>URL分析</span>
+                    </div>
+                    <div class="quick-action" onclick="switchTab('site-crawl')">
+                        <div class="qa-icon" style="background:rgba(108,99,255,0.15);color:var(--accent);">
+                            <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></svg>
+                        </div>
+                        <span>全站爬取</span>
+                    </div>
+                    <div class="quick-action" onclick="switchTab('security')">
+                        <div class="qa-icon" style="background:rgba(239,68,68,0.15);color:var(--danger);">
+                            <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                        </div>
+                        <span>安全检测</span>
+                    </div>
+                    <div class="quick-action" onclick="switchTab('upload')">
+                        <div class="qa-icon" style="background:rgba(245,158,11,0.15);color:var(--warning);">
+                            <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                        </div>
+                        <span>文件分析</span>
+                    </div>
+                    <div class="quick-action" onclick="switchTab('proxy')">
+                        <div class="qa-icon" style="background:rgba(6,182,212,0.15);color:#06b6d4;">
+                            <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+                        </div>
+                        <span>流量代理</span>
+                    </div>
+                </div>
+
+                <!-- Stats Cards -->
+                <div class="stats-grid" id="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon blue">
+                            <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+                        </div>
+                        <div class="stat-info">
+                            <span class="stat-value" id="stat-endpoints">0</span>
+                            <span class="stat-label">发现接口</span>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon green">
+                            <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="3" y1="9" x2="21" y2="9"/></svg>
+                        </div>
+                        <div class="stat-info">
+                            <span class="stat-value" id="stat-targets">0</span>
+                            <span class="stat-label">扫描目标</span>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon orange">
+                            <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/></svg>
+                        </div>
+                        <div class="stat-info">
+                            <span class="stat-value" id="stat-highrisk">0</span>
+                            <span class="stat-label">高风险接口</span>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon purple">
+                            <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></svg>
+                        </div>
+                        <div class="stat-info">
+                            <span class="stat-value" id="stat-categories">0</span>
+                            <span class="stat-label">接口分类</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Charts Row -->
+                <div class="charts-row">
+                    <div class="card chart-card">
+                        <h3>接口分类分布</h3>
+                        <div id="category-chart" class="chart-container"></div>
+                    </div>
+                    <div class="card chart-card">
+                        <h3>HTTP方法分布</h3>
+                        <div id="method-chart" class="chart-container"></div>
+                    </div>
+                    <div class="card chart-card">
+                        <h3>风险等级分布</h3>
+                        <div id="risk-chart" class="chart-container"></div>
+                    </div>
+                </div>
+
+                <!-- Recent Endpoints -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3>最近发现的接口</h3>
+                        <button class="btn btn-sm btn-outline" onclick="switchTab('endpoints')">查看全部</button>
+                    </div>
+                    <div class="table-wrap">
+                        <table class="data-table" id="recent-table">
+                            <thead>
+                                <tr>
+                                    <th>方法</th>
+                                    <th>URL</th>
+                                    <th>分类</th>
+                                    <th>风险</th>
+                                    <th>来源</th>
+                                    <th>时间</th>
+                                </tr>
+                            </thead>
+                            <tbody id="recent-tbody"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Scan Tab -->
+            <section class="tab-content" id="tab-scan">
+                <div class="page-header">
+                    <h1>网站扫描</h1>
+                    <p>自动爬取网站，发现所有API接口</p>
+                </div>
+                <div class="card">
+                    <div class="scan-form">
+                        <div class="input-group">
+                            <input type="text" id="scan-url" class="input-lg" placeholder="输入目标网站URL，例如: https://example.com" />
+                            <button class="btn btn-primary btn-lg" onclick="startWebScan()" id="btn-scan">
+                                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+                                开始扫描
+                            </button>
+                        </div>
+                        <div class="scan-options">
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="deep-scan" checked> 深度扫描（分析JS文件、探测常见路径）
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Progress -->
+                <div class="card" id="scan-progress-card" style="display:none;">
+                    <div class="progress-header">
+                        <h3 id="scan-status-text">扫描中...</h3>
+                        <button class="btn btn-sm btn-danger" onclick="stopScan()">停止</button>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progress-fill"></div>
+                    </div>
+                    <p class="progress-message" id="progress-message"></p>
+                </div>
+
+                <!-- Scan Results -->
+                <div class="card" id="scan-results-card" style="display:none;">
+                    <div class="card-header">
+                        <h3>扫描结果</h3>
+                        <span class="badge" id="scan-result-count">0 个接口</span>
+                    </div>
+                    <div class="table-wrap">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>方法</th>
+                                    <th>URL</th>
+                                    <th>状态码</th>
+                                    <th>分类</th>
+                                    <th>描述</th>
+                                    <th>风险</th>
+                                </tr>
+                            </thead>
+                            <tbody id="scan-results-tbody"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- URL Analyze Tab -->
+            <section class="tab-content" id="tab-analyze">
+                <div class="page-header">
+                    <h1>URL分析</h1>
+                    <p>分析单个API接口的详细信息</p>
+                </div>
+                <div class="card">
+                    <div class="analyze-form">
+                        <div class="form-row">
+                            <select id="analyze-method" class="select-method">
+                                <option value="GET">GET</option>
+                                <option value="POST">POST</option>
+                                <option value="PUT">PUT</option>
+                                <option value="DELETE">DELETE</option>
+                                <option value="PATCH">PATCH</option>
+                            </select>
+                            <input type="text" id="analyze-url" placeholder="输入API接口URL" />
+                            <button class="btn btn-primary" onclick="analyzeUrl()">分析</button>
+                        </div>
+                        <div class="form-row" id="analyze-body-row" style="display:none;">
+                            <textarea id="analyze-body" placeholder="请求体 (JSON)" rows="4"></textarea>
+                        </div>
+                    </div>
+                </div>
+                <div class="card" id="analyze-result-card" style="display:none;">
+                    <h3>分析结果</h3>
+                    <div id="analyze-result"></div>
+                </div>
+            </section>
+
+            <!-- JS Analyze Tab -->
+            <section class="tab-content" id="tab-js-analyze">
+                <div class="page-header">
+                    <h1>JavaScript分析</h1>
+                    <p>分析JS文件中隐藏的API接口</p>
+                </div>
+                <div class="card">
+                    <div class="input-group">
+                        <input type="text" id="js-url" placeholder="输入JavaScript文件URL，例如: https://example.com/static/app.js" />
+                        <button class="btn btn-primary" onclick="analyzeJs()">分析</button>
+                    </div>
+                </div>
+                <div class="card" id="js-result-card" style="display:none;">
+                    <h3>分析结果</h3>
+                    <div id="js-result"></div>
+                </div>
+            </section>
+
+            <!-- Upload Tab -->
+            <section class="tab-content" id="tab-upload">
+                <div class="page-header">
+                    <h1>文件分析</h1>
+                    <p>上传APK/IPA/小程序/HAR等文件进行分析</p>
+                </div>
+                <div class="card">
+                    <div class="upload-zone" id="upload-zone">
+                        <svg viewBox="0 0 24 24" width="48" height="48" fill="none" stroke="currentColor" stroke-width="1.5">
+                            <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/>
+                        </svg>
+                        <p>拖拽文件到这里，或点击选择文件</p>
+                        <p class="upload-hint">支持 .apk .ipa .har .xml .zip .wxapkg 格式</p>
+                        <input type="file" id="file-input" multiple accept=".apk,.ipa,.har,.xml,.zip,.wxapkg" style="display:none;" />
+                    </div>
+                    <div class="upload-options">
+                        <select id="file-type">
+                            <option value="auto">自动检测</option>
+                            <option value="apk">Android APK</option>
+                            <option value="ipa">iOS IPA</option>
+                            <option value="miniprogram">微信小程序</option>
+                            <option value="har">HAR 文件</option>
+                            <option value="burp">Burp Suite XML</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="card" id="upload-result-card" style="display:none;">
+                    <h3>分析结果</h3>
+                    <div id="upload-result"></div>
+                </div>
+            </section>
+
+            <!-- Endpoints Tab -->
+            <section class="tab-content" id="tab-endpoints">
+                <div class="page-header">
+                    <h1>接口列表</h1>
+                    <p>所有已发现的API接口</p>
+                </div>
+                <div class="card">
+                    <div class="filter-bar">
+                        <input type="text" id="search-input" placeholder="搜索接口URL或描述..." />
+                        <select id="filter-category">
+                            <option value="">所有分类</option>
+                        </select>
+                        <select id="filter-method">
+                            <option value="">所有方法</option>
+                            <option value="GET">GET</option>
+                            <option value="POST">POST</option>
+                            <option value="PUT">PUT</option>
+                            <option value="DELETE">DELETE</option>
+                        </select>
+                        <select id="filter-risk">
+                            <option value="">所有风险</option>
+                            <option value="critical">严重</option>
+                            <option value="high">高风险</option>
+                            <option value="medium">中风险</option>
+                            <option value="low">低风险</option>
+                            <option value="info">信息</option>
+                        </select>
+                        <select id="filter-source">
+                            <option value="">所有来源</option>
+                            <option value="crawler">爬虫</option>
+                            <option value="probe">探测</option>
+                            <option value="javascript">JS分析</option>
+                            <option value="form">表单</option>
+                            <option value="spec-import">规范导入</option>
+                            <option value="api-docs">API文档</option>
+                        </select>
+                        <button class="btn btn-outline" id="filter-fav-btn" onclick="toggleFavFilter()" title="仅显示收藏">☆</button>
+                        <button class="btn btn-outline" onclick="loadEndpoints()">刷新</button>
+                    </div>
+                    <div class="table-wrap">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>方法</th>
+                                    <th>URL</th>
+                                    <th>状态</th>
+                                    <th>分类</th>
+                                    <th>描述</th>
+                                    <th>风险</th>
+                                    <th>来源</th>
+                                    <th>操作</th>
+                                </tr>
+                            </thead>
+                            <tbody id="endpoints-tbody"></tbody>
+                        </table>
+                    </div>
+                    <div class="table-footer">
+                        <span id="endpoint-count">共 0 个接口</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Export Tab -->
+            <section class="tab-content" id="tab-export">
+                <div class="page-header">
+                    <h1>数据导出</h1>
+                    <p>将发现的接口数据导出为多种格式</p>
+                </div>
+                <div class="export-grid">
+                    <div class="card export-card" onclick="exportData('json')">
+                        <div class="export-icon">{ }</div>
+                        <h3>JSON</h3>
+                        <p>完整的结构化数据，适合程序处理</p>
+                    </div>
+                    <div class="card export-card" onclick="exportData('csv')">
+                        <div class="export-icon">
+                            <svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="3" y1="15" x2="21" y2="15"/><line x1="9" y1="3" x2="9" y2="21"/><line x1="15" y1="3" x2="15" y2="21"/></svg>
+                        </div>
+                        <h3>CSV</h3>
+                        <p>表格格式，可直接用Excel打开</p>
+                    </div>
+                    <div class="card export-card" onclick="exportData('markdown')">
+                        <div class="export-icon">MD</div>
+                        <h3>Markdown</h3>
+                        <p>格式化报告，适合文档编写</p>
+                    </div>
+                    <div class="card export-card" onclick="exportData('postman')">
+                        <div class="export-icon">P</div>
+                        <h3>Postman</h3>
+                        <p>Postman集合格式，可直接导入</p>
+                    </div>
+                    <div class="card export-card" onclick="exportSarif()">
+                        <div class="export-icon">SF</div>
+                        <h3>SARIF 2.1.0</h3>
+                        <p>静态分析交换格式，支持 GitHub/VS Code/Azure DevOps</p>
+                    </div>
+                </div>
+                <div class="card" style="margin-top:16px;">
+                    <div class="card-header">
+                        <h3>OpenAPI 规范导出</h3>
+                    </div>
+                    <div class="scan-form">
+                        <div class="form-row">
+                            <input type="text" id="openapi-title" placeholder="API文档标题" value="灵探 Auto-Generated Spec" style="flex:2" />
+                            <input type="text" id="openapi-version" placeholder="版本号" value="1.0.0" style="flex:1" />
+                            <button class="btn btn-primary" onclick="exportOpenAPI()">生成 OpenAPI</button>
+                        </div>
+                    </div>
+                    <div id="openapi-result" style="display:none;margin-top:12px;">
+                        <div class="pre-block" id="openapi-preview" style="max-height:400px;overflow:auto;"></div>
+                        <div style="margin-top:8px;">
+                            <button class="btn btn-sm btn-outline" onclick="downloadOpenAPI()">下载 JSON 文件</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Security Scan Tab -->
+            <section class="tab-content" id="tab-security">
+                <div class="page-header">
+                    <h1>漏洞扫描</h1>
+                    <p>对接口进行安全漏洞检测，发现潜在风险</p>
+                    <div style="margin-top:8px;display:flex;gap:8px;">
+                        <button class="btn btn-secondary btn-sm" onclick="startSmartScan()">
+                            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+                            智能扫描
+                        </button>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="scan-form">
+                        <div class="input-group">
+                            <input type="text" id="security-url" placeholder="输入目标URL，例如: https://example.com" />
+                            <button class="btn btn-primary" onclick="startSecurityScan()" id="btn-security-scan">
+                                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                                开始安全扫描
+                            </button>
+                        </div>
+                        <div class="scan-options">
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="security-use-endpoints" checked> 扫描已发现的接口（对已发现接口进行安全测试）
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Payload Evasion -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Payload 绕过测试</h3>
+                        <span class="badge badge-info">编码变换</span>
+                    </div>
+                    <div class="scan-form">
+                        <div style="display:flex;gap:8px;flex-wrap:wrap;">
+                            <input type="text" id="evasion-payload" placeholder="输入 payload，例如: ' OR '1'='1" style="flex:1;min-width:200px;" value="' OR '1'='1" />
+                            <input type="text" id="evasion-waf-name" placeholder="WAF名称 (可选)" style="width:160px;" />
+                            <button class="btn btn-secondary" onclick="startEvasionTest()" id="btn-evasion">
+                                生成绕过 Payload
+                            </button>
+                        </div>
+                    </div>
+                    <div id="evasion-result" style="display:none;margin-top:12px;">
+                        <div id="evasion-result-content"></div>
+                    </div>
+                </div>
+
+                <!-- OAST 带外检测 -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3>OAST 带外检测</h3>
+                        <span class="badge badge-warning">盲注 / 盲XSS / SSRF</span>
+                    </div>
+                    <div class="scan-form">
+                        <div style="display:flex;gap:8px;flex-wrap:wrap;">
+                            <input type="text" id="oast-url" placeholder="目标URL，如 https://example.com/search?q=test" style="flex:1;min-width:200px;" />
+                            <input type="text" id="oast-param" placeholder="参数名" style="width:100px;" value="id" />
+                            <select id="oast-method" style="width:80px;">
+                                <option value="GET">GET</option>
+                                <option value="POST">POST</option>
+                            </select>
+                            <button class="btn btn-secondary" onclick="startOastScan()" id="btn-oast">开始检测</button>
+                        </div>
+                    </div>
+                    <div id="oast-progress" style="display:none;margin-top:8px;">
+                        <div class="progress-bar"><div class="progress-fill" id="oast-progress-fill"></div></div>
+                        <p class="progress-message" id="oast-progress-msg"></p>
+                    </div>
+                    <div id="oast-result" style="display:none;margin-top:12px;">
+                        <div id="oast-result-content"></div>
+                    </div>
+                </div>
+
+                <!-- 模板引擎 -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3>模板检测</h3>
+                        <span class="badge badge-info">Spring / Swagger / GraphQL</span>
+                    </div>
+                    <div class="scan-form">
+                        <div class="input-group">
+                            <input type="text" id="template-url" placeholder="输入目标URL，如 https://example.com" />
+                            <button class="btn btn-secondary" onclick="startTemplateScan()" id="btn-template">执行全部模板</button>
+                        </div>
+                    </div>
+                    <div id="template-result" style="display:none;margin-top:12px;">
+                        <div id="template-result-content"></div>
+                    </div>
+                </div>
+
+                <!-- Security Progress -->
+                <div class="card" id="security-progress-card" style="display:none;">
+                    <div class="progress-header">
+                        <h3 id="security-status-text">安全扫描中...</h3>
+                        <button class="btn btn-sm btn-danger" onclick="stopSecurityScan()">停止</button>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="security-progress-fill"></div>
+                    </div>
+                    <p class="progress-message" id="security-progress-message"></p>
+                </div>
+
+                <!-- Security Results -->
+                <div id="security-results" style="display:none;">
+                    <!-- Summary Cards -->
+                    <div class="stats-grid" id="security-summary-grid" style="margin-bottom:16px;"></div>
+                    <!-- WAF Detection Result (from scan) -->
+                    <div class="card" id="security-waf-card" style="display:none;">
+                        <div class="card-header">
+                            <h3>WAF 防护检测</h3>
+                            <span class="badge" id="security-waf-badge">未检测</span>
+                        </div>
+                        <div id="security-waf-content" style="padding:12px 0;"></div>
+                    </div>
+                    <!-- Vulnerabilities -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h3>漏洞列表</h3>
+                            <span class="badge" id="security-vuln-count">0 个漏洞</span>
+                        </div>
+                        <div class="table-wrap">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>严重程度</th>
+                                        <th>CVSS</th>
+                                        <th>漏洞</th>
+                                        <th>URL</th>
+                                        <th>Payload / 证据</th>
+                                        <th>修复建议</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="security-vuln-tbody"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <!-- Sensitive Files -->
+                    <div class="card" id="security-sensitive-card" style="display:none;">
+                        <div class="card-header">
+                            <h3>敏感文件泄露</h3>
+                            <span class="badge" id="security-sensitive-count">0</span>
+                        </div>
+                        <div class="table-wrap">
+                            <table class="data-table">
+                                <thead>
+                                    <tr><th>路径</th><th>状态码</th><th>大小</th><th>严重程度</th></tr>
+                                </thead>
+                                <tbody id="security-sensitive-tbody"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <!-- Info Disclosure -->
+                    <div class="card" id="security-info-card" style="display:none;">
+                        <div class="card-header">
+                            <h3>信息泄露</h3>
+                        </div>
+                        <div class="table-wrap">
+                            <table class="data-table">
+                                <thead>
+                                    <tr><th>类型</th><th>描述</th><th>URL</th></tr>
+                                </thead>
+                                <tbody id="security-info-tbody"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Request Builder Tab -->
+            <section class="tab-content" id="tab-requester">
+                <div class="page-header">
+                    <h1>请求构造</h1>
+                    <p>手动构造HTTP请求，测试API接口</p>
+                </div>
+                <div class="card">
+                    <div class="analyze-form">
+                        <div class="form-row">
+                            <select id="req-method" class="select-method">
+                                <option value="GET">GET</option>
+                                <option value="POST" selected>POST</option>
+                                <option value="PUT">PUT</option>
+                                <option value="DELETE">DELETE</option>
+                                <option value="PATCH">PATCH</option>
+                            </select>
+                            <input type="text" id="req-url" placeholder="输入请求URL" />
+                            <button class="btn btn-primary" onclick="sendRequest()">发送</button>
+                        </div>
+                        <div class="form-row">
+                            <textarea id="req-headers" placeholder="自定义请求头 (JSON格式)，例如: {&quot;Authorization&quot;: &quot;Bearer token&quot;}" rows="3" style="width:100%;"></textarea>
+                        </div>
+                        <div class="form-row">
+                            <textarea id="req-body" placeholder="请求体 (JSON格式)" rows="5" style="width:100%;"></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Response -->
+                <div class="card" id="req-response-card" style="display:none;">
+                    <div class="card-header">
+                        <h3 id="req-response-title">响应</h3>
+                        <div id="req-response-meta"></div>
+                    </div>
+                    <div class="detail-section">
+                        <h4>响应头</h4>
+                        <div class="pre-block" id="req-resp-headers" style="max-height:150px;"></div>
+                    </div>
+                    <div class="detail-section">
+                        <h4>响应体</h4>
+                        <div class="pre-block" id="req-resp-body" style="max-height:400px;overflow:auto;"></div>
+                    </div>
+                </div>
+
+                <!-- cURL Preview -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3>cURL 命令</h3>
+                        <button class="btn btn-sm btn-outline" onclick="copyCurl()">复制</button>
+                    </div>
+                    <div class="pre-block" id="curl-preview" style="max-height:120px;color:var(--cyan);"></div>
+                </div>
+
+                <!-- Request History -->
+                <div class="card" style="margin-top:16px;">
+                    <div class="card-header">
+                        <h3>请求历史</h3>
+                        <div>
+                            <button class="btn btn-sm btn-outline" onclick="loadHistory()">刷新</button>
+                            <button class="btn btn-sm btn-outline" onclick="clearHistory()" style="color:var(--danger)">清空</button>
+                        </div>
+                    </div>
+                    <div id="req-history-list">
+                        <div style="color:var(--text-muted);font-size:13px;padding:12px 0;">发送请求后自动记录历史</div>
+                    </div>
+                </div>
+
+                <!-- Favorites -->
+                <div class="card" style="margin-top:16px;">
+                    <div class="card-header">
+                        <h3>收藏接口</h3>
+                        <button class="btn btn-sm btn-outline" onclick="loadFavorites()">刷新</button>
+                    </div>
+                    <div id="req-favorites-list">
+                        <div style="color:var(--text-muted);font-size:13px;padding:12px 0;">在接口列表中点击 ☆ 收藏接口</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Tools Tab -->
+            <section class="tab-content" id="tab-tools">
+                <div class="page-header">
+                    <h1>工具箱</h1>
+                    <p>端口扫描、接口对比、接口分组等实用工具</p>
+                </div>
+
+                <!-- Port Scanner -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3>端口扫描</h3>
+                    </div>
+                    <div class="scan-form">
+                        <div class="input-group">
+                            <input type="text" id="portscan-host" placeholder="输入主机地址，例如: 127.0.0.1" value="127.0.0.1" />
+                            <button class="btn btn-primary" onclick="runPortScan()">扫描端口</button>
+                        </div>
+                        <div class="scan-options">
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="portscan-web-only"> 仅扫描Web端口
+                            </label>
+                        </div>
+                    </div>
+                    <div id="portscan-result" style="display:none;margin-top:12px;">
+                        <div class="detail-grid" id="portscan-summary"></div>
+                        <div class="table-wrap" style="margin-top:8px;">
+                            <table class="data-table">
+                                <thead><tr><th>端口</th><th>服务</th><th>Banner</th></tr></thead>
+                                <tbody id="portscan-tbody"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Diff Comparison -->
+                <div class="card" style="margin-top:16px;">
+                    <div class="card-header">
+                        <h3>接口对比</h3>
+                        <p style="font-size:12px;color:var(--text-muted);">对比两次扫描结果的差异</p>
+                    </div>
+                    <div class="scan-form">
+                        <div class="form-row">
+                            <button class="btn btn-primary" onclick="runDiff()">执行对比分析</button>
+                            <span style="font-size:12px;color:var(--text-muted);margin-left:8px;">对比最近两次扫描的接口变化</span>
+                        </div>
+                    </div>
+                    <div id="diff-result" style="display:none;margin-top:12px;">
+                        <div class="stats-grid" id="diff-summary" style="margin-bottom:12px;"></div>
+                        <div class="card" id="diff-added-card" style="display:none;margin-bottom:8px;padding:12px;">
+                            <h4 style="color:var(--success);font-size:14px;margin-bottom:8px;">新增接口</h4>
+                            <div class="table-wrap"><table class="data-table"><thead><tr><th>方法</th><th>URL</th></tr></thead><tbody id="diff-added-tbody"></tbody></table></div>
+                        </div>
+                        <div class="card" id="diff-removed-card" style="display:none;margin-bottom:8px;padding:12px;">
+                            <h4 style="color:var(--danger);font-size:14px;margin-bottom:8px;">移除接口</h4>
+                            <div class="table-wrap"><table class="data-table"><thead><tr><th>方法</th><th>URL</th></tr></thead><tbody id="diff-removed-tbody"></tbody></table></div>
+                        </div>
+                        <div class="card" id="diff-changed-card" style="display:none;margin-bottom:8px;padding:12px;">
+                            <h4 style="color:var(--warning);font-size:14px;margin-bottom:8px;">变更接口</h4>
+                            <div class="table-wrap"><table class="data-table"><thead><tr><th>方法</th><th>URL</th><th>变更内容</th></tr></thead><tbody id="diff-changed-tbody"></tbody></table></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Endpoint Grouping -->
+                <div class="card" style="margin-top:16px;">
+                    <div class="card-header">
+                        <h3>接口分组</h3>
+                        <p style="font-size:12px;color:var(--text-muted);">按资源类型智能分组所有接口</p>
+                    </div>
+                    <div class="scan-form">
+                        <button class="btn btn-primary" onclick="runGroup()">生成分组</button>
+                    </div>
+                    <div id="group-result" style="display:none;margin-top:12px;">
+                        <div class="detail-grid" id="group-summary"></div>
+                        <div id="group-list" style="margin-top:12px;"></div>
+                    </div>
+                </div>
+
+                <!-- Batch Scan -->
+                <div class="card" style="margin-top:16px;">
+                    <div class="card-header">
+                        <h3>批量URL扫描</h3>
+                        <p style="font-size:12px;color:var(--text-muted);">批量分析多个URL</p>
+                    </div>
+                    <div class="scan-form">
+                        <div class="form-row" style="flex-direction:column;align-items:stretch;">
+                            <textarea id="batch-urls" placeholder="每行一个URL，例如:&#10;https://api.example.com/users&#10;https://api.example.com/products&#10;https://api.example.com/orders" rows="5" style="width:100%;"></textarea>
+                        </div>
+                        <div class="form-row">
+                            <button class="btn btn-primary" onclick="runBatchScan()" id="btn-batch-scan">开始批量扫描</button>
+                        </div>
+                    </div>
+                    <!-- Batch Progress -->
+                    <div id="batch-progress" style="display:none;margin-top:12px;">
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="batch-progress-fill"></div>
+                        </div>
+                        <p class="progress-message" id="batch-progress-message"></p>
+                    </div>
+                    <div id="batch-result" style="display:none;margin-top:12px;">
+                        <div class="detail-grid" id="batch-summary"></div>
+                        <div class="table-wrap" style="margin-top:8px;">
+                            <table class="data-table">
+                                <thead><tr><th>URL</th><th>接口数</th><th>分类</th><th>风险</th></tr></thead>
+                                <tbody id="batch-tbody"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Site Crawl Tab -->
+            <section class="tab-content" id="tab-site-crawl">
+                <div class="page-header">
+                    <h1>全站爬取</h1>
+                    <p>深度爬取网站所有页面，分析技术栈和站点结构</p>
+                </div>
+                <div class="card">
+                    <div class="scan-form">
+                        <div class="input-group">
+                            <input type="text" id="site-crawl-url" placeholder="输入目标网站URL，例如: https://example.com" />
+                            <button class="btn btn-primary btn-lg" onclick="startSiteCrawl()" id="btn-site-crawl">
+                                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></svg>
+                                开始爬取
+                            </button>
+                        </div>
+                        <div class="scan-options">
+                            <label class="checkbox-label">
+                                最大页面数: <input type="number" id="site-crawl-max-pages" value="100" min="10" max="500" style="width:70px;margin-left:4px;">
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="card" id="site-crawl-progress-card" style="display:none;">
+                    <div class="progress-header">
+                        <h3 id="site-crawl-status-text">爬取中...</h3>
+                        <button class="btn btn-sm btn-danger" onclick="stopSiteCrawl()">停止</button>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="site-crawl-progress-fill"></div>
+                    </div>
+                    <p class="progress-message" id="site-crawl-progress-message"></p>
+                </div>
+                <div id="site-crawl-results" style="display:none;">
+                    <div class="stats-grid" id="site-overview-grid"></div>
+                    <div class="card" style="margin-top:16px;">
+                        <div class="card-header">
+                            <h3>技术栈</h3>
+                            <span class="badge" id="site-tech-count">0 项技术</span>
+                        </div>
+                        <div id="site-tech-badges" class="tech-badge-grid"></div>
+                    </div>
+                    <div class="card" style="margin-top:16px;">
+                        <div class="card-header">
+                            <h3>页面列表</h3>
+                            <button class="btn btn-sm btn-outline" onclick="loadSitePages()">刷新</button>
+                        </div>
+                        <div class="filter-bar">
+                            <input type="text" id="site-page-search" placeholder="搜索页面..." />
+                        </div>
+                        <div class="table-wrap">
+                            <table class="data-table">
+                                <thead><tr><th>状态</th><th>URL</th><th>标题</th><th>大小</th><th>深度</th><th>资源数</th></tr></thead>
+                                <tbody id="site-pages-tbody"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Sitemap Tab -->
+            <section class="tab-content" id="tab-sitemap">
+                <div class="page-header">
+                    <h1>站点地图</h1>
+                    <p>可视化站点页面层级结构</p>
+                </div>
+                <div class="card">
+                    <div class="card-header">
+                        <h3>站点结构</h3>
+                        <div>
+                            <input type="text" id="sitemap-filter" placeholder="过滤节点..." style="width:150px;padding:4px 8px;background:var(--bg-card);border:1px solid var(--border);border-radius:4px;color:var(--text-primary);font-size:12px;" oninput="filterSitemap(this.value)">
+                            <button class="btn btn-sm btn-outline" onclick="expandAllSitemap()">全部展开</button>
+                            <button class="btn btn-sm btn-outline" onclick="collapseAllSitemap()">全部折叠</button>
+                            <button class="btn btn-sm btn-outline" onclick="loadSitemap()">刷新</button>
+                        </div>
+                    </div>
+                    <div id="sitemap-tree" class="sitemap-tree">
+                        <p style="color:var(--text-muted);text-align:center;padding:40px;">请先进行全站爬取</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Assets Tab -->
+            <section class="tab-content" id="tab-assets">
+                <div class="page-header">
+                    <h1>资源清单</h1>
+                    <p>查看和下载站点所有静态资源</p>
+                </div>
+                <div class="card">
+                    <div class="filter-bar">
+                        <select id="asset-type-filter">
+                            <option value="">全部类型</option>
+                            <option value="image">图片</option>
+                            <option value="css">CSS</option>
+                            <option value="js">JavaScript</option>
+                            <option value="font">字体</option>
+                            <option value="media">媒体</option>
+                        </select>
+                        <button class="btn btn-outline" onclick="loadAssets()">刷新</button>
+                        <button class="btn btn-primary" onclick="downloadSelectedAssets()">下载选中</button>
+                    </div>
+                    <div class="stats-grid" id="asset-type-stats" style="margin-bottom:12px;"></div>
+                    <div class="table-wrap">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th><input type="checkbox" id="asset-select-all" onchange="toggleAllAssets(this)"></th>
+                                    <th>类型</th>
+                                    <th>URL</th>
+                                    <th>来源页面</th>
+                                </tr>
+                            </thead>
+                            <tbody id="assets-tbody"></tbody>
+                        </table>
+                    </div>
+                    <div class="table-footer">
+                        <span id="asset-count">共 0 个资源</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Scripts Tab -->
+            <section class="tab-content" id="tab-scripts">
+                <div class="page-header">
+                    <h1>脚本生成</h1>
+                    <p>自动生成API测试和自动化脚本</p>
+                </div>
+                <div class="export-grid">
+                    <div class="card export-card" onclick="generateScript('python')">
+                        <div class="export-icon">PY</div>
+                        <h3>Python Requests</h3>
+                        <p>生成Python requests库测试脚本</p>
+                    </div>
+                    <div class="card export-card" onclick="generateScript('curl')">
+                        <div class="export-icon">sh</div>
+                        <h3>cURL 批量</h3>
+                        <p>生成cURL命令批处理脚本</p>
+                    </div>
+                    <div class="card export-card" onclick="generateScript('playwright')">
+                        <div class="export-icon">PW</div>
+                        <h3>Playwright</h3>
+                        <p>生成浏览器自动化脚本</p>
+                    </div>
+                </div>
+                <div class="card" id="script-result-card" style="display:none;margin-top:16px;">
+                    <div class="card-header">
+                        <h3 id="script-result-title">生成结果</h3>
+                        <div>
+                            <button class="btn btn-sm btn-outline" onclick="copyScript()">复制</button>
+                            <button class="btn btn-sm btn-outline" onclick="downloadScript()">下载</button>
+                        </div>
+                    </div>
+                    <div class="pre-block" id="script-result-code" style="max-height:500px;overflow:auto;"></div>
+                </div>
+            </section>
+
+            <!-- SEO Tab -->
+            <section class="tab-content" id="tab-seo">
+                <div class="page-header">
+                    <h1>SEO分析</h1>
+                    <p>检查页面SEO优化情况</p>
+                </div>
+                <div class="card">
+                    <div class="scan-form">
+                        <button class="btn btn-primary" onclick="runSEOAnalysis()" id="btn-seo-analyze">开始分析</button>
+                        <span style="color:var(--text-muted);font-size:12px;margin-left:8px;">需先进行全站爬取</span>
+                    </div>
+                </div>
+                <div id="seo-results" style="display:none;">
+                    <div class="stats-grid" id="seo-summary-grid"></div>
+                    <div class="card" style="margin-top:16px;">
+                        <div class="card-header">
+                            <h3>常见问题</h3>
+                        </div>
+                        <div id="seo-top-issues"></div>
+                    </div>
+                    <div class="card" style="margin-top:16px;">
+                        <div class="card-header">
+                            <h3>逐页分析</h3>
+                        </div>
+                        <div class="table-wrap">
+                            <table class="data-table">
+                                <thead><tr><th>SEO分数</th><th>URL</th><th>标题</th><th>问题数</th></tr></thead>
+                                <tbody id="seo-pages-tbody"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Proxy Tab -->
+            <section class="tab-content" id="tab-proxy">
+                <div class="page-header">
+                    <h1>流量代理</h1>
+                    <p>本地代理抓包，捕获浏览器HTTP流量</p>
+                </div>
+                <div class="card">
+                    <div class="scan-form">
+                        <div class="input-group">
+                            <input type="text" id="proxy-port" placeholder="代理端口" value="8088">
+                            <button class="btn btn-primary" onclick="startProxy()" id="btn-proxy-start">启动代理</button>
+                            <button class="btn btn-danger" onclick="stopProxy()" id="btn-proxy-stop" style="display:none;">停止代理</button>
+                        </div>
+                        <div id="proxy-status" style="margin-top:8px;font-size:13px;color:var(--text-muted);"></div>
+                    </div>
+                </div>
+                <div class="card" style="margin-top:16px;">
+                    <div class="card-header">
+                        <h3>捕获流量</h3>
+                        <div style="display:flex;gap:8px;">
+                            <input type="text" id="proxy-filter" placeholder="筛选URL..." style="width:200px;" oninput="loadProxyTraffic()">
+                            <select id="proxy-method-filter" onchange="loadProxyTraffic()" style="width:100px;">
+                                <option value="">全部</option>
+                                <option value="GET">GET</option>
+                                <option value="POST">POST</option>
+                                <option value="PUT">PUT</option>
+                                <option value="DELETE">DELETE</option>
+                            </select>
+                            <button class="btn btn-outline btn-sm" onclick="clearProxyTraffic()">清空</button>
+                        </div>
+                    </div>
+                    <div class="table-wrap">
+                        <table class="data-table">
+                            <thead><tr><th>时间</th><th>方法</th><th>URL</th><th>状态</th><th>操作</th></tr></thead>
+                            <tbody id="proxy-tbody"></tbody>
+                        </table>
+                    </div>
+                    <div class="table-footer" id="proxy-count">0 条记录</div>
+                </div>
+
+                <!-- 流量分析 (合并自独立 tab) -->
+                <div class="card" style="margin-top:16px;">
+                    <div class="card-header">
+                        <h3>流量分析</h3>
+                        <button class="btn btn-primary btn-sm" onclick="analyzeTraffic()">分析流量</button>
+                    </div>
+                    <p style="font-size:13px;color:var(--text-muted);margin:8px 0;">先启动代理捕获流量，然后点击「分析流量」自动提取 API 端点、认证令牌和敏感信息。</p>
+                    <div id="traffic-results">
+                        <div style="color:var(--text-muted);font-size:13px;padding:16px 0;">点击"分析流量"开始分析已捕获的流量数据</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- GraphQL Tab -->
+            <section class="tab-content" id="tab-graphql">
+                <div class="page-header">
+                    <h1>GraphQL</h1>
+                    <p>GraphQL端点发现与Schema分析</p>
+                </div>
+                <div class="card">
+                    <div class="scan-form">
+                        <div class="input-group">
+                            <input type="text" id="graphql-url" placeholder="GraphQL端点URL (如 https://api.example.com/graphql)">
+                            <button class="btn btn-primary" onclick="introspectGraphQL()">执行Introspection</button>
+                        </div>
+                    </div>
+                </div>
+                <div id="graphql-results" style="display:none;margin-top:16px;">
+                    <div class="card">
+                        <div class="card-header"><h3>Schema 概览</h3></div>
+                        <div id="graphql-summary" class="stats-grid"></div>
+                    </div>
+                    <div class="card" style="margin-top:16px;">
+                        <div class="card-header"><h3>Queries</h3></div>
+                        <div class="table-wrap"><table class="data-table"><thead><tr><th>名称</th><th>参数</th><th>返回类型</th></tr></thead><tbody id="gql-queries"></tbody></table></div>
+                    </div>
+                    <div class="card" style="margin-top:16px;">
+                        <div class="card-header"><h3>Mutations</h3></div>
+                        <div class="table-wrap"><table class="data-table"><thead><tr><th>名称</th><th>参数</th><th>返回类型</th></tr></thead><tbody id="gql-mutations"></tbody></table></div>
+                    </div>
+                    <div class="card" style="margin-top:16px;">
+                        <div class="card-header"><h3>Types</h3></div>
+                        <div class="table-wrap"><table class="data-table"><thead><tr><th>名称</th><th>字段数</th><th>描述</th></tr></thead><tbody id="gql-types"></tbody></table></div>
+                    </div>
+                    <div class="card" style="margin-top:16px;">
+                        <div class="card-header"><h3>Enums</h3></div>
+                        <div class="table-wrap"><table class="data-table"><thead><tr><th>名称</th><th>值</th></tr></thead><tbody id="gql-enums"></tbody></table></div>
+                    </div>
+                </div>
+                <div class="card" style="margin-top:16px;">
+                    <div class="card-header"><h3>端点发现</h3><button class="btn btn-outline btn-sm" onclick="findGraphQLEndpoints()">从已爬取页面中查找</button></div>
+                    <div id="graphql-found-endpoints"></div>
+                </div>
+            </section>
+
+            <!-- WebSocket Tab -->
+            <section class="tab-content" id="tab-websocket">
+                <div class="page-header">
+                    <h1>WebSocket</h1>
+                    <p>WebSocket端点检测与分析</p>
+                </div>
+                <div class="card">
+                    <div class="card-header"><h3>检测结果</h3><button class="btn btn-outline btn-sm" onclick="detectWebSockets()">从已爬取页面检测</button></div>
+                    <div id="ws-libraries" style="margin-bottom:12px;"></div>
+                    <div class="table-wrap">
+                        <table class="data-table">
+                            <thead><tr><th>协议</th><th>URL</th><th>发现页面</th><th>操作</th></tr></thead>
+                            <tbody id="ws-tbody"></tbody>
+                        </table>
+                    </div>
+                    <div id="ws-empty" style="color:var(--text-muted);font-size:13px;padding:16px 0;">点击"检测"按钮扫描已爬取页面中的WebSocket端点</div>
+                </div>
+            </section>
+
+            <!-- Report Tab -->
+            <section class="tab-content" id="tab-report">
+                <div class="page-header">
+                    <h1>扫描报告</h1>
+                    <p>生成包含完整扫描结果的HTML报告</p>
+                </div>
+                <div class="card">
+                    <div class="scan-form">
+                        <button class="btn btn-primary btn-lg" onclick="generateReport()" id="btn-gen-report">生成HTML报告</button>
+                        <span style="color:var(--text-muted);font-size:12px;margin-left:8px;">包含接口、安全、技术栈、SEO等全部数据</span>
+                    </div>
+                </div>
+                <div id="report-result" style="display:none;margin-top:16px;">
+                    <div class="card">
+                        <div class="card-header"><h3>报告</h3></div>
+                        <div id="report-list"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Tasks Tab -->
+            <section class="tab-content" id="tab-tasks">
+                <div class="page-header">
+                    <h1>任务队列</h1>
+                    <p>管理后台扫描任务</p>
+                </div>
+                <div class="card">
+                    <div class="card-header"><h3>任务列表</h3><button class="btn btn-outline btn-sm" onclick="loadTasks()">刷新</button></div>
+                    <div class="table-wrap">
+                        <table class="data-table">
+                            <thead><tr><th>ID</th><th>类型</th><th>目标</th><th>状态</th><th>进度</th><th>操作</th></tr></thead>
+                            <tbody id="tasks-tbody"></tbody>
+                        </table>
+                    </div>
+                    <div id="tasks-empty" style="color:var(--text-muted);font-size:13px;padding:16px 0;">暂无任务</div>
+                </div>
+            </section>
+
+            <!-- Plugins Tab -->
+            <section class="tab-content" id="tab-plugins">
+                <div class="page-header">
+                    <h1>插件管理</h1>
+                    <p>自定义技术指纹、安全规则、检测规则</p>
+                </div>
+                <div class="card">
+                    <div class="card-header"><h3>已安装插件</h3><button class="btn btn-outline btn-sm" onclick="loadPlugins()">刷新</button></div>
+                    <div class="table-wrap">
+                        <table class="data-table">
+                            <thead><tr><th>名称</th><th>类型</th><th>规则数</th><th>状态</th><th>操作</th></tr></thead>
+                            <tbody id="plugins-tbody"></tbody>
+                        </table>
+                    </div>
+                    <div id="plugins-empty" style="color:var(--text-muted);font-size:13px;padding:16px 0;">暂无插件。可在下方安装。</div>
+                </div>
+                <div class="card" style="margin-top:16px;">
+                    <div class="card-header"><h3>安装插件</h3><button class="btn btn-link" onclick="loadPluginExample()">加载示例</button></div>
+                    <textarea id="plugin-json" rows="8" placeholder='粘贴插件JSON...&#10;{"name":"MyPlugin","type":"tech_signature","rules":[...]}'></textarea>
+                    <div style="margin-top:8px;">
+                        <button class="btn btn-primary" onclick="installPlugin()">安装</button>
+                    </div>
+                    <div style="margin-top:8px;font-size:12px;color:var(--text-muted);">
+                        支持类型: tech_signature, security_payload, analysis_rule, sensitive_path
+                    </div>
+                </div>
+            </section>
+
+            <!-- Parameter Mining Tab -->
+            <section class="tab-content" id="tab-param-mine">
+                <div class="page-header">
+                    <h1>参数挖掘</h1>
+                    <p>从JavaScript和已发现接口中提取参数，自动Fuzz测试</p>
+                </div>
+                <div class="card">
+                    <div class="card-header"><h3>参数挖掘配置</h3></div>
+                    <div class="input-group">
+                        <input type="text" id="param-url" placeholder="输入目标URL进行参数Fuzz测试，如 https://example.com/search">
+                        <button class="btn btn-primary" id="param-start-btn" onclick="startParamMine()">开始挖掘</button>
+                        <button class="btn btn-danger" onclick="stopParamMine()" style="display:none" id="param-stop-btn">停止</button>
+                    </div>
+                    <div class="progress-bar" id="param-progress" style="display:none">
+                        <div class="progress-fill" id="param-progress-fill"></div>
+                        <span class="progress-text" id="param-progress-text">0%</span>
+                    </div>
+                </div>
+                <div class="card" style="margin-top:16px;">
+                    <div class="card-header"><h3>JWT令牌分析</h3></div>
+                    <textarea id="jwt-token" rows="3" placeholder="粘贴JWT令牌进行分析..."></textarea>
+                    <div style="margin-top:8px;">
+                        <button class="btn btn-outline btn-sm" onclick="analyzeJwt()">分析JWT</button>
+                    </div>
+                    <div id="jwt-result" style="margin-top:12px;"></div>
+                </div>
+                <div class="card" style="margin-top:16px;">
+                    <div class="card-header"><h3>挖掘结果</h3></div>
+                    <div id="param-results">
+                        <div style="color:var(--text-muted);font-size:13px;padding:16px 0;">点击"开始挖掘"开始参数提取和Fuzz测试</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Auth Detection Tab -->
+            <section class="tab-content" id="tab-auth-check">
+                <div class="page-header">
+                    <h1>认证检测</h1>
+                    <p>检测未授权访问、IDOR越权、JWT漏洞、认证绕过</p>
+                </div>
+                <div class="card">
+                    <div class="card-header"><h3>认证检测配置</h3></div>
+                    <div class="input-group">
+                        <input type="text" id="auth-url" placeholder="输入目标URL，如 https://api.example.com/users/1">
+                        <button class="btn btn-primary" id="auth-start-btn" onclick="startAuthCheck()">开始检测</button>
+                        <button class="btn btn-danger" onclick="stopAuthCheck()" style="display:none" id="auth-stop-btn">停止</button>
+                    </div>
+                    <div style="margin-top:8px;">
+                        <textarea id="auth-headers" rows="2" placeholder='可选: 认证头JSON，如 {"Authorization": "Bearer eyJ..."}'></textarea>
+                    </div>
+                    <div class="progress-bar" id="auth-progress" style="display:none">
+                        <div class="progress-fill" id="auth-progress-fill"></div>
+                        <span class="progress-text" id="auth-progress-text">0%</span>
+                    </div>
+                </div>
+                <div class="card" style="margin-top:16px;">
+                    <div class="card-header"><h3>检测结果</h3></div>
+                    <div id="auth-results">
+                        <div style="color:var(--text-muted);font-size:13px;padding:16px 0;">点击"开始检测"进行认证与授权安全检测</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Header Audit Tab -->
+            <section class="tab-content" id="tab-header-audit">
+                <div class="page-header">
+                    <h1>安全头审计</h1>
+                    <p>CORS/CSP/HSTS等安全头配置审计与评分</p>
+                </div>
+                <div class="card">
+                    <div class="card-header"><h3>安全头审计</h3></div>
+                    <div class="input-group">
+                        <input type="text" id="header-url" placeholder="输入目标URL，如 https://example.com">
+                        <button class="btn btn-primary" id="header-start-btn" onclick="startHeaderAudit()">开始审计</button>
+                        <button class="btn btn-danger" onclick="stopHeaderAudit()" style="display:none" id="header-stop-btn">停止</button>
+                    </div>
+                    <div class="progress-bar" id="header-progress" style="display:none">
+                        <div class="progress-fill" id="header-progress-fill"></div>
+                        <span class="progress-text" id="header-progress-text">0%</span>
+                    </div>
+                </div>
+                <div class="card" style="margin-top:16px;">
+                    <div class="card-header"><h3>审计结果</h3></div>
+                    <div id="header-results">
+                        <div style="color:var(--text-muted);font-size:13px;padding:16px 0;">点击"开始审计"分析安全响应头配置</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Subdomain Enumeration Tab -->
+            <section class="tab-content" id="tab-subdomain">
+                <div class="page-header">
+                    <h1>子域名枚举</h1>
+                    <p>通过证书透明度日志和DNS记录发现子域名</p>
+                    <div style="margin-top:8px;display:flex;gap:8px;">
+                        <button class="btn btn-secondary btn-sm" onclick="startReconFlow()">
+                            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+                            一键侦察 (子域名 + 威胁情报 + 历史接口)
+                        </button>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header"><h3>子域名枚举</h3></div>
+                    <div class="input-group">
+                        <input type="text" id="subdomain-domain" placeholder="输入域名，如 example.com">
+                        <button class="btn btn-primary" id="subdomain-start-btn" onclick="startSubdomainEnum()">开始枚举</button>
+                        <button class="btn btn-danger" onclick="stopSubdomainEnum()" style="display:none" id="subdomain-stop-btn">停止</button>
+                    </div>
+                    <div style="margin-top:8px;">
+                        <label style="font-size:13px;display:flex;align-items:center;gap:6px;">
+                            <input type="checkbox" id="subdomain-bruteforce"> 启用暴力枚举 (较慢，会尝试常见子域名)
+                        </label>
+                    </div>
+                    <div class="progress-bar" id="subdomain-progress" style="display:none">
+                        <div class="progress-fill" id="subdomain-progress-fill"></div>
+                        <span class="progress-text" id="subdomain-progress-text">0%</span>
+                    </div>
+                </div>
+                <div class="card" style="margin-top:16px;">
+                    <div class="card-header"><h3>枚举结果</h3></div>
+                    <div id="subdomain-results">
+                        <div style="color:var(--text-muted);font-size:13px;padding:16px 0;">点击"开始枚举"发现子域名</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- OpenAPI Spec Import Tab -->
+            <section class="tab-content" id="tab-spec-import">
+                <div class="page-header">
+                    <h1>OpenAPI/Swagger 规范导入</h1>
+                    <p>导入API规范文件，自动提取接口并生成测试用例</p>
+                </div>
+                <div class="card">
+                    <div class="card-header"><h3>导入方式</h3></div>
+                    <div class="input-group">
+                        <input type="text" id="spec-url" placeholder="输入Swagger/OpenAPI规范URL，如 https://example.com/swagger.json">
+                        <button class="btn btn-primary" onclick="importSpecFromUrl()">从URL导入</button>
+                    </div>
+                    <div style="margin-top:12px;text-align:center;color:var(--text-muted);font-size:13px;">— 或 —</div>
+                    <div style="margin-top:12px;">
+                        <input type="file" id="spec-file" accept=".json,.yaml,.yml" style="display:none" onchange="importSpecFromFile(event)">
+                        <button class="btn btn-outline" onclick="document.getElementById('spec-file').click()">选择本地文件 (.json/.yaml)</button>
+                    </div>
+                    <div style="margin-top:12px;text-align:center;color:var(--text-muted);font-size:13px;">— 或 —</div>
+                    <div style="margin-top:12px;">
+                        <textarea id="spec-content" rows="6" placeholder='粘贴OpenAPI/Swagger JSON内容...'></textarea>
+                        <div style="margin-top:8px;">
+                            <button class="btn btn-outline" onclick="importSpecFromContent()">从内容导入</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="card" style="margin-top:16px;">
+                    <div class="card-header"><h3>导入结果</h3></div>
+                    <div id="spec-results">
+                        <div style="color:var(--text-muted);font-size:13px;padding:16px 0;">选择导入方式开始</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Change Monitor Tab -->
+            <section class="tab-content" id="tab-change-monitor">
+                <div class="page-header">
+                    <h1>接口变更监控</h1>
+                    <p>对接口列表做快照，自动对比新增/删除/修改的接口</p>
+                </div>
+                <div class="card">
+                    <div class="card-header">
+                        <h3>快照管理</h3>
+                        <button class="btn btn-primary btn-sm" onclick="takeSnapshot()">创建快照</button>
+                    </div>
+                    <div id="monitor-snapshots">
+                        <div style="color:var(--text-muted);font-size:13px;padding:16px 0;">点击"创建快照"对当前接口列表做记录</div>
+                    </div>
+                </div>
+                <div class="card" style="margin-top:16px;">
+                    <div class="card-header">
+                        <h3>变更检测</h3>
+                        <button class="btn btn-outline btn-sm" onclick="checkChanges()">检测变更</button>
+                    </div>
+                    <div id="monitor-changes">
+                        <div style="color:var(--text-muted);font-size:13px;padding:16px 0;">需要至少两个快照才能对比变更</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Traffic Analysis Tab -->
+
+            <!-- Dependency Graph Tab -->
+            <section class="tab-content" id="tab-dep-graph">
+                <div class="page-header">
+                    <h1>接口依赖图</h1>
+                    <p>基于页面链接关系的接口调用可视化</p>
+                </div>
+                <div class="card">
+                    <div class="card-header">
+                        <h3>依赖关系图</h3>
+                        <div style="display:flex;gap:8px;">
+                            <button class="btn btn-sm btn-primary" onclick="loadDepGraph()">加载数据</button>
+                            <button class="btn btn-sm btn-outline" onclick="depGraphStopFit()">居中</button>
+                        </div>
+                    </div>
+                    <div id="dep-graph-info" style="margin-bottom:8px;font-size:12px;color:var(--text-muted);"></div>
+                    <div id="dep-graph-container" style="width:100%;height:520px;border:1px solid var(--border);border-radius:6px;background:#0d1117;position:relative;overflow:hidden;cursor:grab;">
+                        <canvas id="dep-graph-canvas" style="width:100%;height:100%;"></canvas>
+                        <div id="dep-graph-tooltip" style="display:none;position:absolute;pointer-events:none;background:rgba(0,0,0,0.85);color:#fff;padding:6px 10px;border-radius:4px;font-size:12px;max-width:300px;z-index:10;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Sessions Tab -->
+            <section class="tab-content" id="tab-sessions">
+                <div class="page-header">
+                    <h1>登录会话</h1>
+                    <p>通过内置浏览器捕获网站登录态，爬虫自动携带 Cookie</p>
+                </div>
+                <div class="card">
+                    <div class="card-header">
+                        <h3>添加登录会话</h3>
+                    </div>
+                    <div class="scan-form">
+                        <div class="input-group">
+                            <input type="text" id="session-url" placeholder="输入需要登录的网站地址，例如: https://example.com" />
+                            <input type="text" id="session-name" placeholder="会话名称（可选）" style="max-width:200px;" />
+                            <button class="btn btn-primary" onclick="openLoginWindow()">打开登录窗口</button>
+                        </div>
+                        <div style="margin-top:8px;font-size:12px;color:var(--text-muted);">
+                            点击后会弹出内置浏览器窗口，在窗口中完成登录后点击「捕获会话」按钮
+                        </div>
+                    </div>
+                    <div id="session-status" style="margin-top:12px;display:none;">
+                        <div style="display:flex;align-items:center;gap:12px;padding:12px;background:var(--bg-card);border-radius:6px;border:1px solid var(--border);">
+                            <div class="spinner" style="width:20px;height:20px;border:2px solid var(--border);border-top-color:var(--primary);border-radius:50%;animation:spin 0.8s linear infinite;"></div>
+                            <span id="session-status-text">等待登录窗口操作...</span>
+                            <button class="btn btn-sm btn-primary" onclick="captureSession()">捕获会话</button>
+                            <button class="btn btn-sm btn-outline" onclick="cancelLoginWindow()">取消</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="card" style="margin-top:16px;">
+                    <div class="card-header">
+                        <h3>已保存的会话</h3>
+                        <button class="btn btn-sm btn-outline" onclick="loadSessions()">刷新</button>
+                    </div>
+                    <div id="sessions-list">
+                        <div style="color:var(--text-muted);font-size:13px;padding:20px 0;text-align:center;">暂无保存的会话</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- WAF 检测 Tab -->
+            <section class="tab-content" id="tab-waf-detect">
+                <div class="page-header">
+                    <h1>WAF 检测</h1>
+                    <p>识别目标网站使用的 Web 应用防火墙类型</p>
+                </div>
+                <div class="card">
+                    <div class="scan-form">
+                        <div class="input-group">
+                            <input type="text" id="waf-url" placeholder="输入目标URL，例如: https://example.com" />
+                            <button class="btn btn-primary" onclick="startWafDetect()" id="btn-waf-detect">
+                                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg>
+                                检测 WAF
+                            </button>
+                        </div>
+                    </div>
+                    <div id="waf-result" style="display:none;margin-top:12px;">
+                        <div id="waf-result-content"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 技术栈指纹 Tab -->
+            <section class="tab-content" id="tab-tech-fp">
+                <div class="page-header">
+                    <h1>技术栈指纹</h1>
+                    <p>精确识别目标网站使用的框架、CMS、库及版本号</p>
+                </div>
+                <div class="card">
+                    <div class="scan-form">
+                        <div class="input-group">
+                            <input type="text" id="tech-url" placeholder="输入目标URL，例如: https://example.com" />
+                            <button class="btn btn-primary" onclick="startTechFingerprint()" id="btn-tech-fp">
+                                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                                识别技术栈
+                            </button>
+                        </div>
+                    </div>
+                    <div id="tech-result" style="display:none;margin-top:12px;">
+                        <div id="tech-result-content"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- JARM 指纹 Tab -->
+            <section class="tab-content" id="tab-jarm">
+                <div class="page-header">
+                    <h1>JARM TLS 指纹</h1>
+                    <p>通过 TLS 指纹识别服务器类型和 CDN</p>
+                </div>
+                <div class="card">
+                    <div class="scan-form">
+                        <div class="input-group">
+                            <input type="text" id="jarm-host" placeholder="输入目标主机或URL，如 https://example.com" />
+                            <button class="btn btn-primary" onclick="startJarmFingerprint()" id="btn-jarm">分析指纹</button>
+                        </div>
+                    </div>
+                    <div id="jarm-result" style="display:none;margin-top:12px;">
+                        <div id="jarm-result-content"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Favicon 指纹 Tab -->
+            <section class="tab-content" id="tab-favicon-fp">
+                <div class="page-header">
+                    <h1>Favicon 指纹</h1>
+                    <p>通过网站图标 hash 识别已知框架和 CMS</p>
+                </div>
+                <div class="card">
+                    <div class="scan-form">
+                        <div class="input-group">
+                            <input type="text" id="favicon-url" placeholder="输入目标URL，如 https://example.com" />
+                            <button class="btn btn-primary" onclick="startFaviconFp()" id="btn-favicon-fp">识别 Favicon</button>
+                        </div>
+                    </div>
+                    <div id="favicon-result" style="display:none;margin-top:12px;">
+                        <div id="favicon-result-content"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 威胁情报 Tab -->
+            <section class="tab-content" id="tab-threat-intel">
+                <div class="page-header">
+                    <h1>威胁情报</h1>
+                    <p>聚合 Shodan / Censys / FOFA 等多源情报</p>
+                </div>
+                <div class="card">
+                    <div class="scan-form">
+                        <div class="input-group">
+                            <input type="text" id="intel-domain" placeholder="输入域名，如 example.com" />
+                            <button class="btn btn-primary" onclick="startIntelQuery()" id="btn-intel">查询情报</button>
+                        </div>
+                        <details style="margin-top:8px;">
+                            <summary style="font-size:12px;color:var(--text-muted);cursor:pointer;">API Key 配置 (可选)</summary>
+                            <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px;">
+                                <input type="text" id="intel-shodan-key" placeholder="Shodan API Key" style="flex:1;min-width:150px;" />
+                                <input type="text" id="intel-censys-id" placeholder="Censys ID" style="flex:1;min-width:150px;" />
+                                <input type="text" id="intel-censys-secret" placeholder="Censys Secret" style="flex:1;min-width:150px;" />
+                                <input type="text" id="intel-fofa-email" placeholder="FOFA Email" style="flex:1;min-width:150px;" />
+                                <input type="text" id="intel-fofa-key" placeholder="FOFA Key" style="flex:1;min-width:150px;" />
+                            </div>
+                        </details>
+                    </div>
+                    <div id="intel-progress" style="display:none;margin-top:8px;">
+                        <div class="progress-bar"><div class="progress-fill" id="intel-progress-fill"></div></div>
+                        <p class="progress-message" id="intel-progress-msg"></p>
+                    </div>
+                    <div id="intel-result" style="display:none;margin-top:12px;">
+                        <div id="intel-result-content"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 历史接口 Tab -->
+            <section class="tab-content" id="tab-wayback">
+                <div class="page-header">
+                    <h1>历史接口发现</h1>
+                    <p>从 Wayback Machine 挖掘目标网站的历史 API 端点</p>
+                </div>
+                <div class="card">
+                    <div class="scan-form">
+                        <div class="input-group">
+                            <input type="text" id="wayback-url" placeholder="输入域名，例如: example.com" />
+                            <button class="btn btn-primary" onclick="startWaybackScan()" id="btn-wayback">
+                                查询历史接口
+                            </button>
+                        </div>
+                    </div>
+                    <div id="wayback-progress" style="display:none;margin-top:8px;">
+                        <div class="progress-bar"><div class="progress-fill" id="wayback-progress-fill"></div></div>
+                        <p class="progress-message" id="wayback-progress-msg"></p>
+                    </div>
+                    <div id="wayback-result" style="display:none;margin-top:12px;">
+                        <div id="wayback-result-content"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 备份探测 Tab -->
+            <section class="tab-content" id="tab-backup-scan">
+                <div class="page-header">
+                    <h1>备份文件探测</h1>
+                    <p>扫描 .bak / .old / .git / .svn 等敏感备份文件</p>
+                </div>
+                <div class="card">
+                    <div class="scan-form">
+                        <div class="input-group">
+                            <input type="text" id="backup-url" placeholder="输入目标URL，例如: https://example.com" />
+                            <button class="btn btn-primary" onclick="startBackupScan()" id="btn-backup">
+                                探测备份文件
+                            </button>
+                        </div>
+                    </div>
+                    <div id="backup-progress" style="display:none;margin-top:8px;">
+                        <div class="progress-bar"><div class="progress-fill" id="backup-progress-fill"></div></div>
+                        <p class="progress-message" id="backup-progress-msg"></p>
+                    </div>
+                    <div id="backup-result" style="display:none;margin-top:12px;">
+                        <div id="backup-result-content"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 云存储检测 Tab -->
+            <section class="tab-content" id="tab-cloud-scan">
+                <div class="page-header">
+                    <h1>云存储泄露检测</h1>
+                    <p>检测 S3 / Firebase / OSS / Azure 等云存储桶泄露</p>
+                </div>
+                <div class="card">
+                    <div class="scan-form">
+                        <div class="input-group">
+                            <input type="text" id="cloud-url" placeholder="输入目标URL，例如: https://example.com" />
+                            <button class="btn btn-primary" onclick="startCloudScan()" id="btn-cloud">
+                                检测云存储
+                            </button>
+                        </div>
+                    </div>
+                    <div id="cloud-result" style="display:none;margin-top:12px;">
+                        <div id="cloud-result-content"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 403 绕过 Tab -->
+            <section class="tab-content" id="tab-forbidden-bypass">
+                <div class="page-header">
+                    <h1>403/401 绕过</h1>
+                    <p>通过 Header 欺骗、路径变换等技巧绕过访问限制</p>
+                </div>
+                <div class="card">
+                    <div class="scan-form">
+                        <div class="input-group">
+                            <input type="text" id="forbidden-url" placeholder="输入受限URL，例如: https://example.com/admin" />
+                            <button class="btn btn-primary" onclick="startForbiddenBypass()" id="btn-forbidden">
+                                测试绕过
+                            </button>
+                        </div>
+                    </div>
+                    <div id="forbidden-progress" style="display:none;margin-top:8px;">
+                        <div class="progress-bar"><div class="progress-fill" id="forbidden-progress-fill"></div></div>
+                        <p class="progress-message" id="forbidden-progress-msg"></p>
+                    </div>
+                    <div id="forbidden-result" style="display:none;margin-top:12px;">
+                        <div id="forbidden-result-content"></div>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- Detail Modal -->
+        <div class="modal" id="detail-modal">
+            <div class="modal-overlay" onclick="closeModal()"></div>
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>接口详情</h3>
+                    <button class="btn-close" onclick="closeModal()">&times;</button>
+                </div>
+                <div class="modal-body" id="modal-body"></div>
+            </div>
+        </div>
+
+        <!-- Toast -->
+        <div class="toast-container" id="toast-container"></div>
+    </div>
+
+    <script src="/static/js/app.js"></script>
+</body>
+</html>
